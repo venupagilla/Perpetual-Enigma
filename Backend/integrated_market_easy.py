@@ -466,7 +466,8 @@ def chat_pitchlab(req: ChatPitchLabReq):
 
 @pitchlab_router.post("/voice-chat")
 def voice_chat_pitchlab(req: FeedbackPitchLabReq):
-    session = pitchlab_sessions.get(req.session_id)
+    sessions = load_sessions()
+    session = sessions.get(req.session_id)
     if not session:
         raise HTTPException(400, f"Session {req.session_id} not found. The server may have restarted.")
     if session["status"] != "active":
@@ -495,12 +496,15 @@ def voice_chat_pitchlab(req: FeedbackPitchLabReq):
     if "[INVEST]" in reply.upper() or "I AM IN" in reply.upper(): session["status"] = "invested"
     elif "[OUT]" in reply.upper() or "I'M OUT" in reply.upper(): session["status"] = "out"
     
+    save_sessions(sessions)
     return {"user_text": user_text, "reply": reply, "status": session["status"]}
 
 @pitchlab_router.post("/feedback")
 def get_pitchlab_feedback(req: FeedbackPitchLabReq):
-    session = pitchlab_sessions.get(req.session_id)
-    if not session or not session["history"]: raise HTTPException(400, "Invalid session")
+    sessions = load_sessions()
+    session = sessions.get(req.session_id)
+    if not session or not session["history"]:
+        raise HTTPException(400, f"Session {req.session_id} not found or has no history.")
     hist = "\n".join(session["history"])
     prompt = f"You are {session['partner']}. Provide constructive feedback on this conversation in ONE single continuous paragraph.\n\n{hist}"
     msgs = [SystemMessage(content=f"You are {session['partner']}. Provide one paragraph feedback."), HumanMessage(content=prompt)]
