@@ -360,10 +360,58 @@ async def regenerate_pitch_api(req: PitchRegenerateRequest):
 
 
 # ============================================================================
-# MODULE 4: PITCHLAB API (+ CLI LOGIC)
+# MODULE 4: PITCHLAB API (+ PERSISTENCE)
 # ============================================================================
 VENTURE_PARTNERS = ["Aman Gupta", "Ashneer Grover", "Anupam Mittal", "Peyush Bansal", "Vineeta Singh", "Nithin Kamath", "Deepinder Goyal"]
-pitchlab_sessions = {}
+SESSION_FILE = os.path.join(tempfile.gettempdir(), "pitchlab_sessions_v1.json")
+
+def save_sessions(sessions_dict):
+    """Serializes sessions to a file for cross-process persistence."""
+    try:
+        serializable = {}
+        for sid, data in sessions_dict.items():
+            # Convert LangChain messages to simple dicts for JSON
+            msgs = []
+            for m in data.get("messages", []):
+                role = "system" if isinstance(m, SystemMessage) else "user" if isinstance(m, HumanMessage) else "assistant"
+                msgs.append({"role": role, "content": m.content})
+            
+            serializable[sid] = {
+                "partner": data["partner"],
+                "status": data["status"],
+                "history": data["history"],
+                "messages_simple": msgs
+            }
+        with open(SESSION_FILE, "w") as f:
+            json.dump(serializable, f)
+    except Exception as e:
+        logger.error(f"Failed to save sessions: {e}")
+
+def load_sessions():
+    """Loads sessions from file and reconstructs LangChain objects."""
+    if not os.path.exists(SESSION_FILE):
+        return {}
+    try:
+        with open(SESSION_FILE, "r") as f:
+            raw = json.load(f)
+        recovered = {}
+        for sid, data in raw.items():
+            msgs = []
+            for m in data.get("messages_simple", []):
+                if m["role"] == "system": msgs.append(SystemMessage(content=m["content"]))
+                elif m["role"] == "user": msgs.append(HumanMessage(content=m["content"]))
+                else: msgs.append(AIMessage(content=m["content"]))
+            
+            recovered[sid] = {
+                "partner": data["partner"],
+                "status": data["status"],
+                "history": data["history"],
+                "messages": msgs
+            }
+        return recovered
+    except Exception as e:
+        logger.error(f"Failed to load sessions: {e}")
+        return {}
 
 class StartPitchLabReq(BaseModel): 
     partner_name: str
@@ -382,31 +430,38 @@ def get_partners(): return {"partners": VENTURE_PARTNERS}
 
 @pitchlab_router.post("/start")
 def start_pitchlab_session(req: StartPitchLabReq):
+    sessions = load_sessions()
     session_id = str(uuid.uuid4())
     system_prompt = f"You are {req.partner_name}, a seasoned Venture Partner at PitchLab. The user is pitching their startup to you. Ask 1 challenging question at a time. Conclude with [INVEST] or [OUT] eventually based on the quality of the pitch."
-    pitchlab_sessions[session_id] = {"partner": req.partner_name, "messages": [SystemMessage(content=system_prompt)], "history": [], "status": "active"}
+    sessions[session_id] = {"partner": req.partner_name, "messages": [SystemMessage(content=system_prompt)], "history": [], "status": "active"}
+    save_sessions(sessions)
     logger.info(f"Created new PitchLab session: {session_id} for partner {req.partner_name}")
     return {"session_id": session_id, "message": f"You are now in PitchLab with {req.partner_name}. Start your pitch!"}
 
 @pitchlab_router.post("/chat")
 def chat_pitchlab(req: ChatPitchLabReq):
-    session = pitchlab_sessions.get(req.session_id)
+    sessions = load_sessions()
+    session = sessions.get(req.session_id)
     logger.info(f"Chat request received for session: {req.session_id}. Session found: {session is not None}")
     
     if not session:
-        # Log all active sessions to help debug restarts/worker isolation
-        logger.warning(f"Session {req.session_id} not found in active sessions: {list(pitchlab_sessions.keys())}")
+        logger.warning(f"Session {req.session_id} not found in available persistent sessions: {list(sessions.keys())}")
         raise HTTPException(400, f"Session {req.session_id} not found. The server may have restarted.")
+    
     if session["status"] != "active":
         raise HTTPException(400, f"Session is already {session['status']}. Start a new one to continue.")
+
     session["messages"].append(HumanMessage(content=req.user_message))
     session["history"].append(f"User: {req.user_message}")
+    
     reply = groq_client.invoke(session["messages"]).content
     session["messages"].append(AIMessage(content=reply))
     session["history"].append(f"{session['partner']}: {reply}")
     
     if "[INVEST]" in reply.upper() or "I AM IN" in reply.upper(): session["status"] = "invested"
     elif "[OUT]" in reply.upper() or "I'M OUT" in reply.upper(): session["status"] = "out"
+    
+    save_sessions(sessions)
     return {"reply": reply, "status": session["status"]}
 
 @pitchlab_router.post("/voice-chat")
