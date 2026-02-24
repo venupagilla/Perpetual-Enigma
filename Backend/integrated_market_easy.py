@@ -384,7 +384,10 @@ def start_pitchlab_session(req: StartPitchLabReq):
 @pitchlab_router.post("/chat")
 def chat_pitchlab(req: ChatPitchLabReq):
     session = pitchlab_sessions.get(req.session_id)
-    if not session or session["status"] != "active": raise HTTPException(400, "Invalid or concluded session")
+    if not session:
+        raise HTTPException(400, f"Session {req.session_id} not found. The server may have restarted.")
+    if session["status"] != "active":
+        raise HTTPException(400, f"Session is already {session['status']}. Start a new one to continue.")
     session["messages"].append(HumanMessage(content=req.user_message))
     session["history"].append(f"User: {req.user_message}")
     reply = groq_client.invoke(session["messages"]).content
@@ -398,7 +401,17 @@ def chat_pitchlab(req: ChatPitchLabReq):
 @pitchlab_router.post("/voice-chat")
 def voice_chat_pitchlab(req: FeedbackPitchLabReq):
     session = pitchlab_sessions.get(req.session_id)
-    if not session or session["status"] != "active": raise HTTPException(400, "Invalid or concluded session")
+    if not session:
+        raise HTTPException(400, f"Session {req.session_id} not found. The server may have restarted.")
+    if session["status"] != "active":
+        raise HTTPException(400, f"Session is already {session['status']}. Start a new one to continue.")
+    
+    if not sr or not pygame:
+        return {
+            "reply": "Voice chat is not available in this cloud environment. Please use the text chat interface instead.",
+            "status": session["status"],
+            "user_text": ""
+        }
     
     user_text = listen_for_speech()
     if not user_text:
