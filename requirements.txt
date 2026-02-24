@@ -9,7 +9,7 @@ langchain_groq
 langchain_community
 langchain_core
 langgraph
-langchain_google_genai
+# langchain_google_genai
 groq
 gunicorn
 python-multipart

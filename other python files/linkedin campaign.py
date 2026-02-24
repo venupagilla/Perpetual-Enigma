@@ -10,12 +10,12 @@ import os
 import json
 import requests
 from dotenv import load_dotenv
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 
 load_dotenv()
 
-# Initialize Gemini 2.5 Flash
-_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.7)
+# Initialize Groq Llama 3.3
+_llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.7)
 
 class JsonParsingLLMWrapper:
     def invoke(self, prompt: str) -> dict:

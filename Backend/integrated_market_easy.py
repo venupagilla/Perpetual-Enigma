@@ -34,7 +34,7 @@ from pydantic import BaseModel, Field
 
 # Langchain
 from langchain_groq import ChatGroq
-from langchain_google_genai import ChatGoogleGenerativeAI
+# from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage, BaseMessage
 from langgraph.graph import StateGraph, END
@@ -68,10 +68,10 @@ except Exception as e:
     groq_client, groq_audio_client = None, None
 
 try:
-    google_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.7)
+    groq_llm = groq_client
 except Exception as e:
-    logger.error(f"Failed to initialize Google LLM: {e}")
-    google_llm = None
+    logger.error(f"Failed to initialize Groq LLM for JSON: {e}")
+    groq_llm = None
 
 
 # ============================================================================
@@ -172,8 +172,8 @@ def listen_for_speech() -> str:
 # ============================================================================
 class JsonParsingLLMWrapper:
     def invoke(self, prompt: str) -> dict:
-        if not google_llm: return {"error": "Google LLM missing"}
-        response = google_llm.invoke(prompt)
+        if not groq_llm: return {"error": "Groq LLM missing"}
+        response = groq_llm.invoke(prompt)
         content = response.content.strip()
         if content.startswith("```json"): content = content[7:]
         elif content.startswith("```"): content = content[3:]
