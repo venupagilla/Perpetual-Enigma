@@ -146,6 +146,3 @@ This project is proprietary. All rights reserved.
 
 For support, please contact the development team.
 
----
-
-**Note**: Do not push changes to GitHub without explicit permission from the team lead.
