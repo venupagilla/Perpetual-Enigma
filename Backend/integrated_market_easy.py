@@ -13,9 +13,15 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 load_dotenv()
 
-# Audio and Voice
-import pygame
-import speech_recognition as sr
+# Audio and Voice (Gated for Cloud Deployment)
+try:
+    import pygame
+    import speech_recognition as sr
+except ImportError:
+    print("Warning: pygame or speech_recognition not found. Voice features will be disabled.")
+    pygame = None
+    sr = None
+
 import re
 import time
 from bs4 import BeautifulSoup
@@ -72,6 +78,11 @@ except Exception as e:
 def speak_text(text: str):
     """Speaks the text out loud using Sarvam AI streaming TTS API."""
     print(f"[Speaking]: {text}")
+    
+    if not pygame:
+        print("[Error]: pygame not installed. Cannot play audio in this environment.")
+        return
+
     if not Config.SARVAM_API_KEY:
         print("[Error]: Sarvam API Key not found in .env file. Falling back to print-only.")
         return
@@ -116,6 +127,9 @@ def speak_text(text: str):
 
 def listen_for_speech() -> str:
     """Listens to the microphone and transcribes speech using Groq's whisper model."""
+    if not sr:
+        print("[Error]: speech_recognition not installed. Voice input disabled.")
+        return ""
     if not groq_audio_client:
         print("[Error]: Groq audio client not initialized.")
         return ""
