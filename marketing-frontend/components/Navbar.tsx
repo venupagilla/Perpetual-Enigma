@@ -5,10 +5,11 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
 const navLinks = [
-  { name: "PitchLab", href: "/dashboard/pitch-lab" },
+  { name: "Lead Generator", href: "/dashboard/leads" },
   { name: "Pitch Generator", href: "/dashboard/pitch" },
-  { name: "Lead Gen", href: "/dashboard/leads" },
-  { name: "LinkedIn Campaigns", href: "/dashboard/campaigns" },
+  { name: "LinkedIn Campaign", href: "/dashboard/campaigns" },
+  { name: "Insta Automation", href: "/dashboard/instagram" },
+  { name: "PitchLab", href: "/dashboard/pitch-lab" },
 ];
 
 export default function Navbar() {

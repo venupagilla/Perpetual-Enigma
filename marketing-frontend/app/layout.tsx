@@ -19,8 +19,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Junos - Webflow HTML website template Replication",
-  description: "A polished template for agencies.",
+  title: "MarketEasy - AI Marketing Assistant",
+  description: "Transform your marketing strategy with AI-powered insights and tools.",
 };
 
 export default function RootLayout({

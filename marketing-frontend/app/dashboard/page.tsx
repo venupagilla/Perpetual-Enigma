@@ -1,15 +1,15 @@
 "use client"
 import React from "react"
 import { motion } from "framer-motion"
-import { Briefcase, Presentation, Users, Lightbulb, ArrowRight } from "lucide-react"
+import { Briefcase, Presentation, Users, Lightbulb, ArrowRight, Instagram } from "lucide-react"
 import Link from "next/link"
 
 const features = [
     {
-        title: "LinkedIn Campaign",
-        desc: "Strategize and generate high-converting LinkedIn content using AI.",
-        url: "/dashboard/campaigns",
-        icon: Briefcase,
+        title: "Lead Generator",
+        desc: "Automated discovery and scoring for target companies.",
+        url: "/dashboard/leads",
+        icon: Users,
         color: "from-fuchsia-500/10 to-transparent",
         borderColor: "group-hover:border-fuchsia-500/40",
         iconColor: "text-fuchsia-400"
@@ -24,10 +24,19 @@ const features = [
         iconColor: "text-fuchsia-400"
     },
     {
-        title: "B2B Lead Gen",
-        desc: "Automated discovery and scoring for target companies.",
-        url: "/dashboard/leads",
-        icon: Users,
+        title: "LinkedIn Campaign",
+        desc: "Strategize and generate high-converting LinkedIn content using AI.",
+        url: "/dashboard/campaigns",
+        icon: Briefcase,
+        color: "from-fuchsia-500/10 to-transparent",
+        borderColor: "group-hover:border-fuchsia-500/40",
+        iconColor: "text-fuchsia-400"
+    },
+    {
+        title: "Insta Automation",
+        desc: "Automate your Instagram presence via n8n neural pipelines.",
+        url: "/dashboard/instagram",
+        icon: Instagram,
         color: "from-fuchsia-500/10 to-transparent",
         borderColor: "group-hover:border-fuchsia-500/40",
         iconColor: "text-fuchsia-400"

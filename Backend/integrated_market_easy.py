@@ -521,5 +521,6 @@ shark_api_app = create_app([pitchlab_router])
 pitch_api_app = create_app([pitch_router])
 
 if __name__ == "__main__":
-    print(f"Starting {Config.APP_NAME} on http://0.0.0.0:8000")
-    uvicorn.run(full_api_app, host="0.0.0.0", port=8000)
+    port = int(os.getenv("PORT", 8000))
+    print(f"Starting {Config.APP_NAME} on http://0.0.0.0:{port}")
+    uvicorn.run(full_api_app, host="0.0.0.0", port=port)

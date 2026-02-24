@@ -1,4 +1,15 @@
+fastapi
+uvicorn
+pydantic
+requests
+python-dotenv
+beautifulsoup4
 langchain
 langchain_groq
 langchain_community
 langchain_core
+langgraph
+langchain_google_genai
+groq
+gunicorn
+python-multipart
