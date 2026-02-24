@@ -66,7 +66,7 @@ except Exception as e:
     groq_client, groq_audio_client = None, None
 
 try:
-    google_llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.7)
+    google_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.7)
 except Exception as e:
     logger.error(f"Failed to initialize Google LLM: {e}")
     google_llm = None
@@ -523,6 +523,15 @@ def run_leadgen_api(req: LeadGenReq):
 def create_app(routers: list) -> FastAPI:
     app = FastAPI(title=Config.APP_NAME, version=Config.APP_VERSION)
     app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+    
+    @app.middleware("http")
+    async def log_errors(request: Request, call_next):
+        try:
+            return await call_next(request)
+        except Exception as e:
+            logger.error(f"FATAL ERROR: {str(e)}", exc_info=True)
+            return JSONResponse(status_code=500, content={"detail": "Internal Server Error", "error": str(e)})
+
     for r in routers: 
         app.include_router(r)
     @app.get("/")
