@@ -365,9 +365,15 @@ async def regenerate_pitch_api(req: PitchRegenerateRequest):
 VENTURE_PARTNERS = ["Aman Gupta", "Ashneer Grover", "Anupam Mittal", "Peyush Bansal", "Vineeta Singh", "Nithin Kamath", "Deepinder Goyal"]
 pitchlab_sessions = {}
 
-class StartPitchLabReq(BaseModel): partner_name: str
-class ChatPitchLabReq(BaseModel): session_id: str; user_message: str
-class FeedbackPitchLabReq(BaseModel): session_id: str
+class StartPitchLabReq(BaseModel): 
+    partner_name: str
+
+class ChatPitchLabReq(BaseModel): 
+    session_id: str
+    user_message: str
+
+class FeedbackPitchLabReq(BaseModel): 
+    session_id: str
 
 pitchlab_router = APIRouter(prefix="/api/pitch-lab", tags=["pitch-lab"])
 
@@ -379,12 +385,17 @@ def start_pitchlab_session(req: StartPitchLabReq):
     session_id = str(uuid.uuid4())
     system_prompt = f"You are {req.partner_name}, a seasoned Venture Partner at PitchLab. The user is pitching their startup to you. Ask 1 challenging question at a time. Conclude with [INVEST] or [OUT] eventually based on the quality of the pitch."
     pitchlab_sessions[session_id] = {"partner": req.partner_name, "messages": [SystemMessage(content=system_prompt)], "history": [], "status": "active"}
+    logger.info(f"Created new PitchLab session: {session_id} for partner {req.partner_name}")
     return {"session_id": session_id, "message": f"You are now in PitchLab with {req.partner_name}. Start your pitch!"}
 
 @pitchlab_router.post("/chat")
 def chat_pitchlab(req: ChatPitchLabReq):
     session = pitchlab_sessions.get(req.session_id)
+    logger.info(f"Chat request received for session: {req.session_id}. Session found: {session is not None}")
+    
     if not session:
+        # Log all active sessions to help debug restarts/worker isolation
+        logger.warning(f"Session {req.session_id} not found in active sessions: {list(pitchlab_sessions.keys())}")
         raise HTTPException(400, f"Session {req.session_id} not found. The server may have restarted.")
     if session["status"] != "active":
         raise HTTPException(400, f"Session is already {session['status']}. Start a new one to continue.")
