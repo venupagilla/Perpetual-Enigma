@@ -66,7 +66,7 @@ except Exception as e:
     groq_client, groq_audio_client = None, None
 
 try:
-    google_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.7)
+    google_llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.7)
 except Exception as e:
     logger.error(f"Failed to initialize Google LLM: {e}")
     google_llm = None
