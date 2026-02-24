@@ -59,8 +59,10 @@ class Config:
 
 # Initialize global LLMs
 try:
-    groq_client = ChatGroq(model=Config.LLM_MODEL, temperature=Config.LLM_TEMPERATURE, api_key=Config.GROQ_API_KEY)
-    groq_audio_client = __import__('groq').Groq() if Config.GROQ_API_KEY else None
+    groq_api_key = Config.GROQ_API_KEY
+    groq_client = ChatGroq(model=Config.LLM_MODEL, temperature=Config.LLM_TEMPERATURE, api_key=groq_api_key)
+    from groq import Groq
+    groq_audio_client = Groq(api_key=groq_api_key) if groq_api_key else None
 except Exception as e:
     logger.error(f"Failed to initialize Groq client: {e}")
     groq_client, groq_audio_client = None, None
