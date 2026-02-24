@@ -113,13 +113,16 @@ def speak_text(text: str):
                 if chunk:
                     temp_audio.write(chunk)
         
-        pygame.mixer.init()
-        pygame.mixer.music.load(temp_filename)
-        pygame.mixer.music.play()
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)
-        pygame.mixer.music.unload()
-        pygame.mixer.quit()
+        try:
+            pygame.mixer.init()
+            pygame.mixer.music.load(temp_filename)
+            pygame.mixer.music.play()
+            while pygame.mixer.music.get_busy():
+                pygame.time.Clock().tick(10)
+            pygame.mixer.music.unload()
+            pygame.mixer.quit()
+        except Exception as mixer_err:
+            print(f"[Mixer Error]: Hardware audio not available in this environment. {mixer_err}")
     except Exception as e:
         print(f"[Sarvam API/Playback Error]: {e}")
     finally:
