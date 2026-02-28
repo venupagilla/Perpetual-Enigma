@@ -1,4 +1,5 @@
-# MarketEasy
+# Brandeuver
+
 
 A comprehensive marketing automation platform designed to streamline campaign management, lead generation, and social media coordination across multiple platforms including Instagram and LinkedIn.
 
@@ -14,9 +15,9 @@ A comprehensive marketing automation platform designed to streamline campaign ma
 ## 📋 Project Structure
 
 ```
-MarketEasy/
+Brandeuver/
 ├── Backend/                    # Python Flask/FastAPI backend
-│   ├── integrated_market_easy.py
+│   ├── integrated_brandeuver.py
 │   └── __init__.py
 ├── marketing-frontend/         # Next.js TypeScript frontend
 │   ├── app/                   # Next.js app directory
@@ -99,7 +100,7 @@ MarketEasy/
 
 ### Backend
 ```bash
-python Backend/integrated_market_easy.py
+python Backend/integrated_brandeuver.py
 # or
 python app.py
 ```

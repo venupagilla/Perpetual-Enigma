@@ -218,7 +218,7 @@ export default function LinkedInCampaignPage() {
                                         <div className="flex items-center gap-4 border-b border-white/5 pb-6">
                                             <div className="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-lg font-bold text-neutral-500">ME</div>
                                             <div className="flex flex-col">
-                                                <span className="text-sm font-bold">MarketEasy Autonomous Agent</span>
+                                                <span className="text-sm font-bold">Brandeuver Autonomous Agent</span>
                                                 <div className="flex items-center gap-2 text-[10px] text-neutral-500 font-bold uppercase tracking-widest">
                                                     <Clock className="w-3 h-3" />
                                                     <span>Optimized for 10:00 AM EST</span>

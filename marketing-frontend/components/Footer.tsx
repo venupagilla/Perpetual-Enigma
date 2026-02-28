@@ -89,7 +89,7 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-center text-xs text-neutral-600 font-semibold uppercase tracking-widest border-t border-white/10 pt-8 relative z-10">
-          <div>[ ©Copyright 2026 MarketEasy. powered by Next.js ]</div>
+          <div>[ ©Copyright 2026 Brandeuver. powered by Next.js ]</div>
           <div className="flex gap-6 mt-4 md:mt-0">
             <a href="#" className="hover:text-neutral-300 transition-colors">
               [ Style Guide ]

@@ -31,7 +31,7 @@ export default function Navbar() {
           href="/"
           className="text-xl font-bold tracking-tighter hover:opacity-80 transition-opacity z-50"
         >
-          ©MarketEasy
+          ©Brandeuver
         </Link>
 
         <div className="flex items-center gap-4 z-50">

@@ -70,7 +70,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           className="uppercase font-semibold tracking-widest text-[10px] sm:text-xs mb-8 text-neutral-400"
         >
-          [ Introducing MarketEasy AI ]
+          [ Introducing Brandeuver AI ]
         </motion.div>
 
         <motion.h1

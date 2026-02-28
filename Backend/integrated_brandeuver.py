@@ -54,7 +54,7 @@ class Config:
     LLM_MODEL: str = os.getenv("LLM_MODEL", "llama-3.3-70b-versatile")
     LLM_TEMPERATURE: float = float(os.getenv("LLM_TEMPERATURE", "0.7"))
     LLM_MAX_TOKENS: int = int(os.getenv("LLM_MAX_TOKENS", "2048"))
-    APP_NAME: str = "MarketEasy Integrated Assistant"
+    APP_NAME: str = "Brandeuver Integrated Assistant"
     APP_VERSION: str = "1.0.0"
 
 # Initialize global LLMs

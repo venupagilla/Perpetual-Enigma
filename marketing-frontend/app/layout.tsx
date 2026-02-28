@@ -19,7 +19,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "MarketEasy - AI Marketing Assistant",
+  title: "Brandeuver - AI Marketing Assistant",
   description: "Transform your marketing strategy with AI-powered insights and tools.",
 };
 
