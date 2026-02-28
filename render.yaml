@@ -2,11 +2,12 @@ services:
   - type: web
     name: brandeuver-backend
     env: python
+    pythonVersion: "3.10.0"
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn -w 1 -k uvicorn.workers.UvicornWorker Backend.integrated_brandeuver:full_api_app --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
-        value: 3.10.0
+        value: "3.10.0"
       - key: GROQ_API_KEY
         sync: false
       - key: SARVAM_API_KEY
